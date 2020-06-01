@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using Photon.Pun;
 using Photon.Realtime;
@@ -32,14 +31,15 @@ public class Draggable : MonoBehaviourPun//, IBeginDragHandler, IDragHandler, IE
             return;
         }
         sr.sortingOrder++;
-        //클릭했을때 중점 저장
+        //클릭했을때 중점 저장=====================================
         defaultPosition = this.transform.position;
-        //Debug.Log(defaultPosition);
+        //=======================================================
         //중점위치에 따른 덱 bool값 변환
         if (defaultPosition.y > -3.3f && defaultPosition.y < 0.6f)
         {
             SizeOutputDeck();
         }
+
     }
     //마우스 드래그시 오브젝스 위치 갱신
     void OnMouseDrag()
@@ -48,9 +48,12 @@ public class Draggable : MonoBehaviourPun//, IBeginDragHandler, IDragHandler, IE
         {
             return;
         }
+        //===========================================================================================
         Vector2 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
         Vector2 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        //실시간 갱신 오브젝트 위치
         transform.position = objPosition;
+        //===========================================================================================
     }
     //마우스가 떨어졌을때 1에서 5 박스 의 범위 사이에 있을 경우
     void OnMouseUp()

@@ -732,11 +732,9 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
             //GameObject go = Instantiate(CardBase, location, Quaternion.identity);
             Debug.Log(PhotonNetwork.NickName);
             
-            photonView.RPC("SetCard", RpcTarget.All, rndNum);
             //위치 본인한테 쏘고
             photonView.RPC("SetLocationUp", RpcTarget.All);
-            //위치 타인한테 쏘고
-            //photonView.RPC("SetLocationEnemy", RpcTarget.Others);
+            photonView.RPC("SetCard", RpcTarget.All, rndNum);
             Debug.Log("위치:"+location);
             CardMake(CardBase);
         }
@@ -800,7 +798,7 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
                 break;
         }
     }
-    [PunRPC]
+    
     public void SetLocation()
     {
         go.transform.position = FindMyLocation();
@@ -809,6 +807,7 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
     public void SetLocationUp()
     {
         location = FindUpLocation();
+        Debug.Log("위치는" + location);
     }
     
     void CardMake(GameObject CardBase)
@@ -816,7 +815,7 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
         //카드 생성
         go = PhotonNetwork.Instantiate(CardBase.name, location, Quaternion.identity);
         //위치 밑으로 보내기
-        photonView.RPC("SetLocation", PhotonNetwork.LocalPlayer);
+        SetLocation();
         //본인카드 플레이어덱 하위로 보내기
         go.transform.SetParent(PlayerDeck.transform);
         //미사일 파이어 컴포넌트 바꾸기
@@ -832,37 +831,43 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             location = new Vector3(1.575f, -2, 0);
             deck6 = true;
-            photonView.RPC("OutputDeckE", RpcTarget.All, 6);
+            OutputDeckE(6);
+            //photonView.RPC("OutputDeckE", RpcTarget.Others, 6);
         }
         else if (deck1&&deck2&&deck3&&deck4&&!deck5)
         {
             location = new Vector3(0.95f, -2, 0);
             deck5 = true;
-            photonView.RPC("OutputDeckE", RpcTarget.All, 5);
+            OutputDeckE(5);
+            //photonView.RPC("OutputDeckE", RpcTarget.Others, 5);
         }
         else if (deck1&&deck2&&deck3&&!deck4)
         {
             location = new Vector3(0.3125f, -2, 0);
             deck4 = true;
-            photonView.RPC("OutputDeckE", RpcTarget.All, 4);
+            OutputDeckE(4);
+            //photonView.RPC("OutputDeckE", RpcTarget.Others, 4);
         }
         else if (deck1&&deck2&&!deck3)
         {
             location = new Vector3(-0.3125f, -2, 0);
             deck3 = true;
-            photonView.RPC("OutputDeckE", RpcTarget.All, 3);
+            OutputDeckE(3);
+            //photonView.RPC("OutputDeckE", RpcTarget.Others, 3);
         }
         else if (deck1&&!deck2)
         {
             location = new Vector3(-0.95f, -2, 0);
             deck2 = true;
-            photonView.RPC("OutputDeckE", RpcTarget.All, 2);
+            OutputDeckE(2);
+            //photonView.RPC("OutputDeckE", RpcTarget.Others, 2);
         }
         else if (!deck1)
         {
             location = new Vector3(-1.575f, -2, 0);
             deck1 = true;
-            photonView.RPC("OutputDeckE", RpcTarget.Others, 1);
+            OutputDeckE(1);
+            //photonView.RPC("OutputDeckE", RpcTarget.Others, 1);
         }
 
         return location;
@@ -896,11 +901,13 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             location = new Vector3(-0.95f, 2.6f, 0);
             deckE2 = true;
+            Debug.Log("덱2");
         }
         else if (!deckE1)
         {
             location = new Vector3(-1.575f, 2.6f, 0);
             deckE1 = true;
+            Debug.Log("덱1");
         }
 
         return location;
@@ -927,15 +934,13 @@ public class CardManager : MonoBehaviourPunCallbacks, IPunObservable
         GameObject setCard = SetCardInfo(card[(baseCard.GetComponent<CardInfo>().ImgNum - 15) - 1]);
         GameObject newCard = PhotonNetwork.Instantiate(setCard.name, location, Quaternion.identity);
         newCard.transform.SetParent(PlayerDeck.transform);
+        //미사일 파이어 컴포넌트 바꾸기
+        Destroy(newCard.GetComponent<OpMagicFire>());
+        newCard.AddComponent<magicFire>();
         //Debug.Log(subCard.GetComponent<CardInfo>().Name);
         //Debug.Log(baseCard.GetComponent<CardInfo>().Name);
         PhotonNetwork.Destroy(subCard);
         PhotonNetwork.Destroy(baseCard);
-    }
-    //auto 업그레이드
-    void UpgradeCard(GameObject subCard, GameObject baseCard)
-    {
-
     }
     //카드 버리기
     public void ReleaseCard(GameObject cardBase)

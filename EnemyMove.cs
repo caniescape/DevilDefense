@@ -91,6 +91,7 @@ public class EnemyMove : MonoBehaviour
         {
             //enemyfalse로 변경하고 리스트에서 제거하고 돈 증가
             es.EnemyRemove(gameObject);
+            GameManager.instance.GetSP(sp);
             gameObject.SetActive(false);
         }
     }

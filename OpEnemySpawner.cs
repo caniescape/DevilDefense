@@ -18,35 +18,34 @@ public class OpEnemySpawner : MonoBehaviour
     public Transform spawnPoint;
 
     public List<GameObject> OpEnemies = new List<GameObject>();
-
-    private int wave = 1;   //웨이브숫자
+    
     private bool waveClear;   //웨이브클리어
 
-    void FixedUpdate()
+    void LateUpdate()
     {
-        if (!waveClear && wave == 1)
+        if (!waveClear && !GameManager.instance.eWave && GameManager.instance.wave == 1)
         {
-            //IsWave1 = false;
+            Debug.Log("현재웨이브1");
             StartCoroutine("Wave1");
             waveClear = true;
         }
-        if (!waveClear && wave == 2)
+        if (!waveClear && !GameManager.instance.eWave && GameManager.instance.wave == 2)
         {
             StartCoroutine("Wave2");
             waveClear = true;
         }
 
-        if (!waveClear && wave == 3)
+        if (!waveClear && !GameManager.instance.eWave && GameManager.instance.wave == 3)
         {
             StartCoroutine("Wave3");
             waveClear = true;
         }
-        if (!waveClear && wave == 4)
+        if (!waveClear && !GameManager.instance.eWave && GameManager.instance.wave == 4)
         {
             StartCoroutine("Wave4");
             waveClear = true;
         }
-        if (!waveClear && wave == 5)
+        if (!waveClear && !GameManager.instance.eWave && GameManager.instance.wave == 5)
         {
             StartCoroutine("Wave5");
             waveClear = true;
@@ -54,9 +53,8 @@ public class OpEnemySpawner : MonoBehaviour
         //웨이브 클리어 했을시
         if (waveClear && OpEnemies.Count == 0)
         {
-            wave++;
+            GameManager.instance.eWave = true;
             orderNum = 0;
-            GameManager.instance.ResetTime();
             waveClear = false;
         }
     }

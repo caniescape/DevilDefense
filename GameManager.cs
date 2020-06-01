@@ -36,6 +36,11 @@ public class GameManager : MonoBehaviourPun//, IPunObservable
     public Text earthLvText;
     public Text hellLvText;
 
+    public int wave = 1;   //웨이브숫자
+    //나와 적의 웨이브 성공여부
+    public bool pWave;
+    public bool eWave;
+    
     //Timer관련
     public float defaultLimitTime;
     public float limitTime;
@@ -65,6 +70,14 @@ public class GameManager : MonoBehaviourPun//, IPunObservable
     
     void FixedUpdate()
     {
+        if(pWave&& eWave)
+        { 
+            ResetWave();
+            Debug.Log("다음웨이브");
+            pWave = false;
+            eWave = false;
+        }
+
         //Timer
         //Wave가 시작되면 초기화
         limitTime -= Time.deltaTime;
@@ -182,9 +195,15 @@ public class GameManager : MonoBehaviourPun//, IPunObservable
         }
     }
 
-    public void ResetTime()
+    public void ResetWave()
     {
         limitTime = defaultLimitTime;
+        wave++;
+    }
+
+    public void GetSP(int sp)
+    {
+        this.sp += sp;
     }
 
     //항복함수
